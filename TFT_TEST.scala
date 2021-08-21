@@ -5,7 +5,7 @@ import spinal.lib._
 import spinal.lib.fsm._
 import TFT_Driver._
 
-class TFT_TEST extends Component {
+class TFT_TEST(val delay: BigInt) extends Component {
     var io = new Bundle()
     {
         val lcd_rst = out Bool
@@ -17,7 +17,7 @@ class TFT_TEST extends Component {
     val data_clk = False
     val data = B"9'h000"
 
-    val lcd = TFT_ILI9341(10 ms)
+    val lcd = TFT_ILI9341(delay)
     io.lcd_sck := lcd.io.SPI_SCL
     io.lcd_sdo := lcd.io.SPI_SDA
     io.lcd_rst := lcd.io.SPI_RST
@@ -39,7 +39,7 @@ class TFT_TEST extends Component {
     val paramData = ParamsRom(ParamsPointer)
 
     val ScreenX = Counter(start = 0, end = 319)
-    val ScreenY = Counter(start = 0, end = 239)
+    val ScreenY = Counter(start = 0, end = 240)
     val ScreenDone = RegNext(ScreenX.willOverflowIfInc && ScreenY.willOverflowIfInc)
 
     val colorHighByte = False
@@ -49,13 +49,14 @@ class TFT_TEST extends Component {
     val grid = False
 
     val ballX = Reg(UInt(9 bits)) init(0)
-    val ballY = Reg(UInt(8 bits)) init(0)
+    val ballY = Reg(UInt(8 bits)) init(10)
     val ballXDir = Reg(Bool) init(True)
     val ballYDir = Reg(Bool) init(True)
 
     when(ScreenX(4) ^ ScreenY(4)) {
         grid := True
     }
+
     when(ScreenX >= ballX && ScreenX <= ballX+10 && ScreenY >= ballY && ScreenY <= ballY+10){
         ball := True
     }
@@ -112,24 +113,11 @@ class TFT_TEST extends Component {
                         ParamsPointer.increment()
                         goto(StartFrame)
                     }otherwise{
-                        ScreenX.increment()
-                        
-                        when (ScreenX.willOverflowIfInc) {
-                            ScreenY.increment()
-                        }
-
-                        goto(LoadColor)
+                        goto(LoadColorLowByte)
                     }
                 }
             }
         }
-        //Spacing 
-        val LoadColor: State = new State {
-            whenIsActive {
-                goto(LoadColorLowByte)
-            }
-        }
-
         val LoadColorLowByte: State = new State {
             onEntry{
                 data_clk := True;
@@ -151,6 +139,10 @@ class TFT_TEST extends Component {
                 when(ScreenDone){
                     goto(Finish)
                 }otherwise{
+                    ScreenX.increment()
+                    when (ScreenX.willOverflowIfInc) {
+                        ScreenY.increment()
+                    }
                     goto(SendData)
                 }
             }
@@ -160,13 +152,13 @@ class TFT_TEST extends Component {
             whenIsActive {
                 colorHighByte :=  False;
 
-                when(ballX === 0){
+                when(ballX < 1){
                     ballXDir := True
                 } elsewhen(ballX >= 310){
                     ballXDir := False
                 }
 
-                when(ballY === 0) {
+                when(ballY < 1) {
                     ballYDir := True
                 } elsewhen(ballY >= 230){
                     ballYDir := False
@@ -176,7 +168,7 @@ class TFT_TEST extends Component {
             }
         }
         //Reset everything and wait for next frame
-        val Done: State = new StateDelay(5 ms) {
+        val Done: State = new StateDelay(delay) {
             whenIsActive {
                 data_clk := False;
                 ScreenY.clear()
@@ -197,5 +189,13 @@ class TFT_TEST extends Component {
                 goto(StartFrame)
             }
         }
+    }
+}
+
+object TFT_TESTConfig extends SpinalConfig(targetDirectory = "/home/winston/Projects/C/nodeUI/src/TestNodes/", defaultConfigForClockDomains = ClockDomainConfig(resetKind = SYNC))
+//Generate the MyTopLevel's Verilog using the above custom configuration.
+object TFT_TESTGen {
+    def main(args: Array[String]) {
+        TFT_TESTConfig.generateVerilog(new TFT_TEST(10))
     }
 }
