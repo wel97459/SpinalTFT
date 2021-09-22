@@ -66,7 +66,10 @@ class TFT_ILI9341(val Delay: BigInt) extends Component {
         0x0C1, 0x110, //POWER CONTROL,SAP[2:0];BT[3:0]
         0x0C5, 0x13E, 0x128, //VCM CONTROL
         0x0C7, 0x186, //VCM CONTROL 2
-        0x036, 0x148, //MEMORY ACCESS CONTROL
+        //0x036, 0x148, //SCREEN_VERTICAL_1
+        //0x036, 0x128, //SCREEN_HORIZONTAL_1
+        //0x036, 0x188, //SCREEN_VERTICAL_2
+        0x036, 0x1E8, //SCREEN_HORIZONTAL_2
         0x03A, 0x155, //PIXEL FORMAT
         0x0B1, 0x100, 0x118, //FRAME RATIO CONTROL, STANDARD RGB COLOR
         0x0B6, 0x108, 0x182, 0x127, //DISPLAY FUNCTION CONTROL
@@ -76,10 +79,6 @@ class TFT_ILI9341(val Delay: BigInt) extends Component {
         0x0E1, 0x100, 0x10E, 0x114, 0x103, 0x111, 0x107, 0x131, 0x1C1, 0x148, 0x108, 0x10F, 0x10C, 0x131, 0x136, 0x10F, //NEGATIVE GAMMA CORRECTION
         0x211, //EXIT SLEEP
         0x029, //TURN ON DISPLAY
-        //0x036, 0x148, //SCREEN_VERTICAL_1
-        //0x036, 0x128, //SCREEN_HORIZONTAL_1
-        //0x036, 0x188, //SCREEN_VERTICAL_2
-        0x036, 0x1E8, //SCREEN_HORIZONTAL_2
         0x3ff  //END
     )
     val initParamsRom = Mem(UInt(10 bits), initParamsList.map(U(_, 10 bits)))
