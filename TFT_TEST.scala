@@ -4,7 +4,7 @@ import spinal.core._
 import spinal.lib._
 import spinal.lib.fsm._
 import TFT_Driver._
-
+import MyHardware._
 class TFT_TEST(val delay: BigInt) extends Component {
     var io = new Bundle()
     {
@@ -39,7 +39,7 @@ class TFT_TEST(val delay: BigInt) extends Component {
     val paramData = ParamsRom(ParamsPointer)
 
     val ScreenX = Counter(start = 0, end = 319)
-    val ScreenY = Counter(start = 0, end = 240)
+    val ScreenY = Counter(start = 0, end = 239)
     val ScreenDone = RegNext(ScreenX.willOverflowIfInc && ScreenY.willOverflowIfInc)
 
     val colorHighByte = False
@@ -193,6 +193,7 @@ class TFT_TEST(val delay: BigInt) extends Component {
 }
 
 object TFT_TESTConfig extends SpinalConfig(targetDirectory = "/home/winston/Projects/C/nodeUI/src/TestNodes/", defaultConfigForClockDomains = ClockDomainConfig(resetKind = SYNC))
+
 //Generate the MyTopLevel's Verilog using the above custom configuration.
 object TFT_TESTGen {
     def main(args: Array[String]) {
