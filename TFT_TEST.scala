@@ -8,10 +8,10 @@ import MyHardware._
 class TFT_TEST(val delay: BigInt) extends Component {
     var io = new Bundle()
     {
-        val lcd_rst = out Bool
-        val lcd_dc = out Bool
-        val lcd_sdo = out Bool
-        val lcd_sck = out Bool
+        val lcd_rst = out Bool()
+        val lcd_dc = out Bool()
+        val lcd_sdo = out Bool()
+        val lcd_sck = out Bool()
     }
 
     val data_clk = False

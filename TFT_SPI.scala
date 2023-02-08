@@ -12,18 +12,18 @@ object TFT_SPI {
 class TFT_SPI(val Delay: BigInt) extends Component {
     val io = new Bundle {
             val data = in Bits(9 bits) //Data to be placed into FIFO
-            val data_clk = in Bool
+            val data_clk = in Bool()
 
-            val ready = out Bool
-            val sending = out Bool
+            val ready = out Bool()
+            val sending = out Bool()
 
-            val fifo_full = out Bool //High when less than two byte are available in the fifo
+            val fifo_full = out Bool() //High when less than two byte are available in the fifo
 
-            val SPI_SCL = out Bool
-            val SPI_SDA = out Bool
-            val SPI_DC = out Bool
-            val SPI_RST = out Bool
-            val SPI_CS = out Bool
+            val SPI_SCL = out Bool()
+            val SPI_SDA = out Bool()
+            val SPI_DC = out Bool()
+            val SPI_RST = out Bool()
+            val SPI_CS = out Bool()
     }
 
     val source,sink = Stream(Bits(9 bits))

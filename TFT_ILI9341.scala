@@ -15,18 +15,18 @@ object TFT_ILI9341 {
 class TFT_ILI9341(val Delay: BigInt) extends Component {
     val io = new Bundle {
         val data = in Bits (9 bits) //Data to be placed into FIFO
-        val data_clk = in Bool
+        val data_clk = in Bool()
 
-        val ready = out Bool
-        val sending = out Bool
-        val fifo_full = out Bool //High when less than two byte are available in the fifo
-        val displayReady = out Bool
+        val ready = out Bool()
+        val sending = out Bool()
+        val fifo_full = out Bool() //High when less than two byte are available in the fifo
+        val displayReady = out Bool()
 
-        val SPI_SCL = out Bool
-        val SPI_SDA = out Bool
-        val SPI_DC = out Bool
-        val SPI_RST = out Bool
-        val SPI_CS = out Bool
+        val SPI_SCL = out Bool()
+        val SPI_SDA = out Bool()
+        val SPI_DC = out Bool()
+        val SPI_RST = out Bool()
+        val SPI_CS = out Bool()
     }
 
     val displayReady = Reg(Bool) init (false)
