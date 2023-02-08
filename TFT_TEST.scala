@@ -4,7 +4,7 @@ import spinal.core._
 import spinal.lib._
 import spinal.lib.fsm._
 import TFT_Driver._
-import MyHardware._
+import MySpinalHardware._
 class TFT_TEST(val delay: BigInt) extends Component {
     var io = new Bundle()
     {
